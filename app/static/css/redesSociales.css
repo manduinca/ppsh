@@ -1,0 +1,138 @@
+
+.redesSociales, .contenedorRedesSociales1, #redesSociales1 {
+	display: inline-block;
+}
+
+.redesSociales, .contenedorRedesSociales1, #redesSociales1 {
+	display: inline-block;
+}
+.redesSociales .enlace1 {
+	margin: 0;
+}
+.redesSociales .enlace1 li {
+	list-style: none;
+	display: block !important;
+}
+#redesSociales1 span a, .redesSociales .enlace1 li a {
+	width: 40px;
+	height: 45px;
+	margin-bottom: 1px;
+	background: url(../imagenes/icon_socialnetworks.png) center -5px no-repeat #505050;
+	padding: 0 !important;
+	border-left: 5px solid rgba(255,255,255,.001);
+}
+.redesSociales .enlace1 li a {
+	display: block;
+	text-indent: -9999px;
+}
+#redesSociales1 span a img {
+	display: none;
+}
+#redesSociales1 span a.facebook , .redesSociales .enlace1 li a.facebook{
+	background-position: center 0px;
+	background-color: #3A57A4;
+}
+#redesSociales1 span a.twitter, .redesSociales .enlace1 li a.twitter {
+	background-position: center -50px;
+	background-color: #4EAFE8;
+}
+#redesSociales1 span a.youtube, .redesSociales .enlace1 li a.youtube {
+	background-position: center -155px;
+	background-color: #CA3625;
+}
+#redesSociales1 span a.googlePlus {
+	background-position: center -100px;
+	background-color: #CD4023;
+}
+.redesSociales .enlace1 li a.correo {
+	background-position: center -300px;
+	background-color: #FA6E00;
+}
+.redesSociales .enlace1 li a.preguntas {
+	background-position: center -350px;
+	background-color: #3F73A3;
+}
+
+#redesSociales1 span a:hover, .redesSociales .enlace1 li a:hover {
+	background-color: #DD0D0D;
+	border-left-color: rgba(0,0,0,.35);
+}
+
+/*** COMPARTIR PUBLICACION ***/
+
+
+.pubUtilidadesRedes {
+    border: none;
+    display: block;
+    clear: both;
+    overflow: hidden;
+    margin-top: 10px;
+}
+.comparteRedes {
+	float: right;
+	margin: 0 0 0 5px;
+}
+.comparteRedesContainer {
+	clear: both;
+	display: block;
+	float: right;
+}
+.comparteRedesContainer h2 {
+    margin: 0;
+    display: inline-block;
+    line-height: 2.5em !important;
+    font-weight: lighter;
+    font-size: .875em !important;
+    font-family: Verdana, sans-serif !important;
+    color: #8D8D8D !important;
+}
+.comparteRedesContainer li {
+    margin: 0;
+    list-style: none;
+    display: inline-block;
+    line-height: 3em;
+}
+.comparteRedesContainer li a {
+    background-position: center center ;
+    background-repeat: no-repeat;
+    background-size: 16px auto;
+    border-radius: 60px;
+    height: 28px;
+    margin: 2px;
+    width: 28px;
+    display: block;
+    text-indent: -9999px;
+}
+.comparteRedesContainer li a:hover {
+    background-size: 18px auto;
+}
+.comparteRedesContainer li a.facebook {
+    background-color: #3B5998;
+    background-image: url("../imagenes/iconRedes_facebook.png");
+}
+.comparteRedesContainer li a.twitter {
+    background-color: #4DC8F1;
+    background-image: url("../imagenes/iconRedes_twitter.png");
+}
+.comparteRedesContainer li a.google-plus {
+    background-color: #D13F2D;
+    background-image: url("../imagenes/iconRedes_google.png");
+}
+.comparteRedesContainer li a.pinterest {
+    background-color: #CB2028;
+    background-image: url("../imagenes/iconRedes_pinterest.png");
+}
+.comparteRedesContainer li a.myspace {
+    background-color: #243D92;
+    background-image: url("../imagenes/iconRedes_myspace.png");
+}
+.comparteRedesContainer li a.linkedin {
+    background-color: #0275B5;
+    background-image: url("../imagenes/iconRedes_linkedin.png");
+}
+.comparteRedesContainer li a.buzz {display: none;}
+
+
+@media (max-width: 767px) {
+	.redesSociales .enlace1 li {display: inline-block !important;} 
+}

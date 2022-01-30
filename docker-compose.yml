@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  ppsh:
+    image: programwar/apache-php56:latest
+    container_name: ppsh
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app:/var/www/public
+    depends_on:
+      - db
+  db:
+    image: mysql:5.6
+    environment:
+      MYSQL_ROOT_PASSWORD: '123456'
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
