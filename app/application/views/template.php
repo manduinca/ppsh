@@ -27,7 +27,14 @@
             function log10(n) {
                 return Math.log(n) / Math.log(10);
             }
-			$(document).ready(function(){
+			$(document).ready(function() {
+                Highcharts.wrap(Highcharts.Axis.prototype, 'getPlotLinePath', function(proceed) {
+                    var path = proceed.apply(this, Array.prototype.slice.call(arguments, 1));
+                    if (path) {
+                        path.flat = false;
+                    }
+                    return path;
+                });
 				var chart = new Highcharts.Chart({
 					chart: {
 						renderTo: 'container',
@@ -62,14 +69,16 @@
 								width: 1.5,
 								color: '#FA5858',
 								label: {
-									text: '1/475 años'
+									text: '1/475 años',
+                                    x: 50
 								}
 							},
 							{	value: Math.log10(1/2475),
 								width: 1.5,
 								color: '#FA5858',
 								label: {
-									text: '1/2475 años'
+									text: '1/2475 años',
+                                    x: 50
 								}
 							}
 						],
@@ -117,7 +126,12 @@
                             text: 'Periodo estructural (s)'
                         },
 						gridLineWidth: 1,
-						gridZIndex: 4
+						gridZIndex: 4,
+                        labels: {
+                            formatter: function() {
+                                return this.value.toFixed(2);
+                            }
+                        }
                     },
 					yAxis: {
 						title: {
@@ -127,7 +141,12 @@
 							value: 0,
 							width: 1,
 							color: '#808080'
-						}]
+						}],
+                        labels: {
+                            formatter: function() {
+                                return this.value.toFixed(2);
+                            }
+                        }
 					},
 					legend: {
 						layout: 'vertical',
@@ -167,7 +186,12 @@
                             text: 'Periodo estructural (s)'
                         },
 						gridLineWidth: 1,
-						gridZIndex: 4
+						gridZIndex: 4,
+                        labels: {
+                            formatter: function() {
+                                return this.value.toFixed(2);
+                            }
+                        }
                     },
 					yAxis: {
 						title: {
@@ -177,7 +201,12 @@
 							value: 0,
 							width: 1,
 							color: '#808080'
-						}]
+						}],
+                        labels: {
+                            formatter: function() {
+                                return this.value.toFixed(2);
+                            }
+                        }
 					},
 					legend: {
 						layout: 'vertical',
@@ -833,9 +862,10 @@
 								<div class="col-lg-2">
 									<select id="tipo" class="form-control col-lg-2">
 										<option value="e30_2003">E.030-2006</option>
-										<option value="e30_2015">E.030-2016</option>
-										<option value="e30_2015_esp">E.030-2016 (Z específico)</option>
+										<option value="e30_2015">E.030-2018</option>
+										<option value="e30_2015_esp">E.030-2018 (Z específico)</option>
 										<option value="ibc">IBC-2015</option>
+                                        <option value="asce">ASCE 7-16</option>
 									</select>
 								</div>
 								<div class="col-lg-1">
@@ -870,6 +900,14 @@
 										<option value="3">D: Suelo firme</option>
 										<option value="4">E: Suelo blando</option>
 									</select>
+                                    <select id="suelo_asce" class="tipo_suelo form-control col-lg-2" style="display: none;">
+                                        <option value="5"></option>
+                                        <option value="0">A: Roca muy dura</option>
+                                        <option value="1">B: Roca</option>
+                                        <option value="2">C: Roca blanda o suelo muy denso</option>
+                                        <option value="3">D: Suelo firme</option>
+                                        <option value="4">E: Suelo blando</option>
+                                    </select>
 								</div>
 								<div class="col-lg-2">
 									<a id="btn-delete-suelo" href="#" class="btn btn-primary">Borrar Espectros</a>

@@ -56,6 +56,8 @@ class Points extends REST_Controller {
 			$result_data = $this->_e30_2015_esp($location, $ground);
 		} else if ($type == 'ibc') {
 			$result_data = $this->_ibc($location, $ground);
+        } else if ($type == 'asce') {
+            $result_data = $this->_ibc($location, $ground);
 		}
 		foreach ($result_data as $x => $y) {
 			$result[] = array('x' => $x, 'y' => $y);
