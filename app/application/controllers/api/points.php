@@ -57,7 +57,7 @@ class Points extends REST_Controller {
 		} else if ($type == 'ibc') {
 			$result_data = $this->_ibc($location, $ground);
         } else if ($type == 'asce') {
-            $result_data = $this->_ibc($location, $ground);
+            $result_data = $this->_asce($location, $ground);
 		}
 		foreach ($result_data as $x => $y) {
 			$result[] = array('x' => $x, 'y' => $y);
@@ -161,25 +161,15 @@ class Points extends REST_Controller {
 
 		$result = array();
 		$X = array();
-		$Y_y = array();
-		$Y_z = array();
-		$Y_mc = array();
-		$Y_ab = array();
-		$Y_bc = array();
-		
+		$Y = array();
+
 		foreach ($zer_data as $zd) {
 			$X[] = $zd->X;
-			$Y_y[] = $zd->Y_y;
-			$Y_z[] = $zd->Y_z;
-			$Y_mc[] = $zd->Y_mc;
-			$Y_ab[] = $zd->Y_ab;
-			$Y_bc[] = $zd->Y_bc;
+			$Y[] = $zd->Y_y;
 		}
 		
 		for($i = 0; $i < 20; $i++) {
-			$sum = $ponderaciones[$polygon][0] * $Y_y[$i] + $ponderaciones[$polygon][1] * $Y_z[$i] + $ponderaciones[$polygon][2] * $Y_mc[$i] + $ponderaciones[$polygon][3] * $Y_ab[$i] + $ponderaciones[$polygon][4] * $Y_bc[$i];
-			$sum = number_format($sum, 8, '.', '');
-			$result[] = array('x' => $X[$i] / 981, 'y' => $sum);
+			$result[] = array('x' => $X[$i] / 981, 'y' => number_format($Y[$i], 8, '.', ''));
 		}
 		return $result;
 	}
@@ -431,11 +421,11 @@ class Points extends REST_Controller {
 	private function _ibc($location, $tipo_suelo)
 	{
 		$prob = $this->_probabilidades($location, 0.2);
-		$PGA1 = $this->_interpolar($prob, 1.0 / 2500.0);
+		$PGA1 = $this->_interpolar($prob, 1.0 / 2475.0);
 		//if($PGA < 0.08) $PGA = 0.08;
 		
 		$prob2 = $this->_probabilidades($location, 1.0);
-		$PGA2 = $this->_interpolar($prob2, 1.0 / 2500.0);
+		$PGA2 = $this->_interpolar($prob2, 1.0 / 2475.0);
 		//if($PGA < 0.08) $PGA = 0.08;
 		
 		$Ss = $PGA1; $Sl = $PGA2;
@@ -451,5 +441,65 @@ class Points extends REST_Controller {
 				else $espectro_ibc[(string) $T] = $Sds;
 		}
 		return $espectro_ibc;
+    }
+
+    private function _fvAsce($Sl, $tp)
+    {
+        $F = array(
+            array(0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
+            array(0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
+            array(1.5, 1.5, 1.5, 1.5, 1.5, 1.4),
+            array(2.4, 2.2, 2.0, 1.9, 1.8, 1.7),
+            array(4.2, 4.0, 4.0, 4.0, 4.0, 4.0)
+        );
+        if($Sl <= 0.1) return $F[$tp][0];
+        if($Sl <= 0.2) return ($F[$tp][0] - $F[$tp][1]) / 0.1 * (0.2 - $Sl) + $F[$tp][1];
+        if($Sl <= 0.3) return ($F[$tp][1] - $F[$tp][2]) / 0.1 * (0.3 - $Sl) + $F[$tp][2];
+        if($Sl <= 0.4) return ($F[$tp][2] - $F[$tp][3]) / 0.1 * (0.4 - $Sl) + $F[$tp][3];
+        if($Sl <= 0.5) return ($F[$tp][3] - $F[$tp][4]) / 0.1 * (0.5 - $Sl) + $F[$tp][4];
+        if($Sl <= 0.6) return ($F[$tp][4] - $F[$tp][5]) / 0.1 * (0.6 - $Sl) + $F[$tp][5];
+        return $F[$tp][5];
+    }
+
+    private function _faAsce($Ss, $tp)
+    {
+        $F = array(
+            array(0.8, 0.8, 0.8, 0.8, 0.8, 0.8),
+            array(0.9, 0.9, 0.9, 0.9, 0.9, 0.9),
+            array(1.3, 1.3, 1.2, 1.2, 1.2, 1.2),
+            array(1.6, 1.4, 1.2, 1.1, 1.0, 1.0),
+            array(2.4, 1.7, 1.3, 1.0, 1.0, 1.0)
+        );
+        if($Ss <= 0.25) return $F[$tp][0];
+        if($Ss <= 0.50) return ($F[$tp][0] - $F[$tp][1]) / 0.25 * (0.50 - $Ss) + $F[$tp][1];
+        if($Ss <= 0.75) return ($F[$tp][1] - $F[$tp][2]) / 0.25 * (0.75 - $Ss) + $F[$tp][2];
+        if($Ss <= 1.00) return ($F[$tp][2] - $F[$tp][3]) / 0.25 * (1.00 - $Ss) + $F[$tp][3];
+        if($Ss <= 1.25) return ($F[$tp][3] - $F[$tp][4]) / 0.25 * (1.25 - $Ss) + $F[$tp][4];
+        if($Ss <= 1.50) return ($F[$tp][3] - $F[$tp][4]) / 0.25 * (1.50 - $Ss) + $F[$tp][5];
+        return $F[$tp][5];
+    }
+
+    private function _asce($location, $siteClass) {
+        $prob = $this->_probabilidades($location, 0.2);
+        $PGA1 = $this->_interpolar($prob, 1.0 / 2475.0);
+        //if($PGA < 0.08) $PGA = 0.08;
+
+        $prob2 = $this->_probabilidades($location, 1.0);
+        $PGA2 = $this->_interpolar($prob2, 1.0 / 2475.0);
+        //if($PGA < 0.08) $PGA = 0.08;
+
+        $Ss = $PGA1; $Sl = $PGA2;
+        $Fv = $this->_fvAsce($Sl, $siteClass);
+        $Fa = $this->_faAsce($Ss, $siteClass);
+        $Sml = $Fv * $Sl; $Sms = $Fa * $Ss;
+        $Sdl = 2.0 / 3.0 * $Sml; $Sds = 2.0 / 3.0 * $Sms;
+        $T0 = $Sdl / $Sds * 0.2; $Ts = $Sdl / $Sds;
+        for($T = 0.0; $T < 3.01; $T += 0.01) {
+            if($T < $T0) $espectro_ibc[(string) $T] = $Sds * (0.4 + 0.6 * $T / $T0);
+            else
+                if($T >= $Ts) $espectro_ibc[(string) $T] = $Sdl / $T;
+                else $espectro_ibc[(string) $T] = $Sds;
+        }
+        return $espectro_ibc;
     }
 }
